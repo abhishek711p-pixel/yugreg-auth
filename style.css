@@ -1,0 +1,459 @@
+/* ==========================================================================
+   YUGREG - LUXURY BLACK & WARM WHITE DESIGN SYSTEM
+   ========================================================================== */
+
+:root {
+  /* True Black & Deep Obsidian Surfaces */
+  --bg-page: #080808;
+  --bg-card: #121212;
+  --bg-input: #181818;
+  
+  --border-color: #2c2824;
+  --border-focus: #fdfbf7;
+  
+  /* Luminous Warm White / Ivory & Warm Stone */
+  --text-main: #fdfbf7;
+  --text-muted: #b5afa4;
+  --text-error: #fca5a5;
+  --text-success: #86efac;
+  
+  /* Solid Warm White Primary Buttons with Obsidian Dark Text */
+  --btn-primary: #fdfbf7;
+  --btn-primary-hover: #ede8dc;
+  --btn-text: #080808;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --shadow-card: 0 16px 40px -4px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(253, 251, 247, 0.15);
+  --shadow-btn: 0 4px 16px rgba(253, 251, 247, 0.25);
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   APP HEADER
+   ========================================================================== */
+.app-header {
+  width: 100%;
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.app-header.header-hidden {
+  transform: translateY(-100%);
+}
+
+.header-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.brand-logo-img {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: block;
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #fdfbf7;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: #1a1816;
+  color: #fdfbf7;
+  border: 1px solid #3d3832;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.logout-btn:hover {
+  background: #26231f;
+  border-color: #5c554c;
+}
+
+/* ==========================================================================
+   MAIN WRAPPER & RESPONSIVE CARD
+   ========================================================================== */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 440px;
+}
+
+/* ==========================================================================
+   SHINY HERO LOGO BADGE
+   ========================================================================== */
+.hero-logo-wrapper {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.shiny-logo-badge {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(253, 251, 247, 0.28);
+  box-shadow: 0 0 28px rgba(253, 251, 247, 0.18), 0 8px 24px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.shiny-logo-badge:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 35px rgba(253, 251, 247, 0.3), 0 12px 28px rgba(0, 0, 0, 0.8);
+}
+
+.shiny-logo-badge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 65%
+  );
+  transform: rotate(30deg);
+  animation: shineSweep 4s infinite ease-in-out;
+}
+
+@keyframes shineSweep {
+  0% { transform: translate(-100%, -100%) rotate(30deg); }
+  25%, 100% { transform: translate(100%, 100%) rotate(30deg); }
+}
+
+.shiny-logo-img {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 6px rgba(255, 255, 255, 0.25));
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 22px 18px;
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.card-title {
+  font-size: clamp(18px, 4.5vw, 22px);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  margin-bottom: 6px;
+  color: #fdfbf7;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+@media (min-width: 480px) {
+  .card {
+    padding: 28px 24px;
+  }
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 32px;
+  }
+}
+
+/* Ultra-compact adaptation for small windows / mobile */
+@media (max-width: 320px) {
+  .app-header {
+    padding: 6px 10px;
+  }
+  .brand-title {
+    display: none; /* Keep only the logo icon to prevent overlap */
+  }
+  .logout-btn {
+    padding: 6px 8px;
+  }
+  .logout-btn span {
+    display: none; /* Keep only the logout icon to prevent overlap */
+  }
+  .card {
+    padding: 14px 10px;
+  }
+}
+
+/* ==========================================================================
+   PAGE VIEWS
+   ========================================================================== */
+.page-view {
+  display: none;
+}
+
+.page-view.active {
+  display: block;
+}
+
+.card-header {
+  margin-bottom: 24px;
+}
+
+.badge-success {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #1c261e;
+  color: #86efac;
+  border: 1px solid #2d4534;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* ==========================================================================
+   FORM CONTROLS
+   ========================================================================== */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.req {
+  color: #fca5a5;
+}
+
+.prefilled-tag {
+  font-size: 11px;
+  padding: 2px 7px;
+  background: rgba(253, 251, 247, 0.12);
+  color: #fdfbf7;
+  border: 1px solid rgba(253, 251, 247, 0.25);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.form-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 14.5px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(253, 251, 247, 0.2);
+}
+
+.form-input.is-invalid {
+  border-color: var(--text-error);
+  box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
+}
+
+.form-input.is-valid {
+  border-color: #86efac;
+}
+
+.input-password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-password-wrapper .form-input {
+  padding-right: 56px;
+}
+
+.pwd-toggle {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+.pwd-toggle:hover {
+  color: #fdfbf7;
+}
+
+.error-text {
+  font-size: 12px;
+  color: var(--text-error);
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+.btn {
+  width: 100%;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary);
+  color: var(--btn-text);
+  box-shadow: var(--shadow-btn);
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+  box-shadow: 0 6px 20px rgba(253, 251, 247, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-text {
+  background: transparent;
+  color: #fdfbf7;
+  font-size: 13px;
+  margin-top: 10px;
+  height: auto;
+  padding: 6px;
+  opacity: 0.85;
+}
+
+.btn-text:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+/* ==========================================================================
+   VALIDATION RESULT BOX
+   ========================================================================== */
+.result-box {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.result-box.success {
+  background: #14291f;
+  border: 1px solid #22c55e;
+  color: #86efac;
+}
+
+.result-box.error {
+  background: #2b1718;
+  border: 1px solid var(--text-error);
+  color: var(--text-error);
+}
