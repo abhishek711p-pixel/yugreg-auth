@@ -1,5 +1,5 @@
 // Registration Page Controller (Page 1)
-// Handles user registration, Firebase session creation, and redirects to profile.html on success
+// Handles user registration, Firebase session creation, whitespace checks, and redirects to profile.html on success
 
 import { firebaseAuth } from './firebase-config.js';
 
@@ -18,17 +18,29 @@ const errRegPassword = document.getElementById('error-reg-password');
 
 // a) Name: Only characters, no numbers and special characters allowed
 function validateName(name) {
-  const trimmed = name.trim();
-  if (!trimmed) return { valid: false, message: 'Name cannot be empty.' };
-  if (/\d/.test(trimmed)) return { valid: false, message: 'Name cannot contain numbers.' };
-  if (/[^A-Za-z\s]/.test(trimmed)) return { valid: false, message: 'Name cannot contain special characters (letters only).' };
-  if (/^[A-Za-z\s]+$/.test(trimmed)) return { valid: true };
+  if (!name || name.trim().length === 0) {
+    return { valid: false, message: 'Name cannot be empty or contain only spaces.' };
+  }
+  if (/\d/.test(name)) {
+    return { valid: false, message: 'Name cannot contain numbers.' };
+  }
+  if (/[^A-Za-z\s]/.test(name)) {
+    return { valid: false, message: 'Name cannot contain special characters (letters only).' };
+  }
+  if (/^[A-Za-z\s]+$/.test(name.trim())) {
+    return { valid: true };
+  }
   return { valid: false, message: 'Only characters and spaces allowed.' };
 }
 
 // b) Password: at least one number and one alphabet is required
 function validatePassword(password) {
-  if (!password) return { valid: false, message: 'Password cannot be empty.' };
+  if (!password || password.trim().length === 0) {
+    return { valid: false, message: 'Password cannot be empty or contain only spaces.' };
+  }
+  if (/\s/.test(password)) {
+    return { valid: false, message: 'Password cannot contain spaces.' };
+  }
   
   const hasAlpha = /[A-Za-z]/.test(password);
   const hasDigit = /\d/.test(password);
@@ -48,10 +60,16 @@ function validatePassword(password) {
 
 // e) Email: basic format should follow
 function validateEmail(email) {
-  const trimmed = email.trim();
-  if (!trimmed) return { valid: false, message: 'Email cannot be empty.' };
-  if (!trimmed.includes('@')) return { valid: false, message: "Email must include an '@' symbol." };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+  if (!email || email.trim().length === 0) {
+    return { valid: false, message: 'Email cannot be empty or contain only spaces.' };
+  }
+  if (/\s/.test(email)) {
+    return { valid: false, message: 'Email cannot contain spaces.' };
+  }
+  if (!email.includes('@')) {
+    return { valid: false, message: "Email must include an '@' symbol." };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { valid: false, message: 'Please enter a valid email format (e.g. name@example.com).' };
   }
   return { valid: true };
@@ -91,10 +109,33 @@ function setupEventListeners() {
     }
   });
 
-  // Clear errors when user types in registration
-  [regName, regEmail, regPassword].forEach(input => {
-    input.addEventListener('input', () => clearRegistrationErrors());
+  // Live real-time validation on typing
+  regName.addEventListener('input', () => {
+    const res = validateName(regName.value);
+    updateFieldUI(regName, errRegName, res);
   });
+
+  regEmail.addEventListener('input', () => {
+    const res = validateEmail(regEmail.value);
+    updateFieldUI(regEmail, errRegEmail, res);
+  });
+
+  regPassword.addEventListener('input', () => {
+    const res = validatePassword(regPassword.value);
+    updateFieldUI(regPassword, errRegPassword, res);
+  });
+}
+
+function updateFieldUI(inputEl, errorEl, result) {
+  if (result.valid) {
+    inputEl.classList.remove('is-invalid');
+    inputEl.classList.add('is-valid');
+    if (errorEl) errorEl.textContent = '';
+  } else {
+    inputEl.classList.add('is-invalid');
+    inputEl.classList.remove('is-valid');
+    if (errorEl) errorEl.textContent = result.message;
+  }
 }
 
 // Handle Registration Submission with Genuine Page Redirection
@@ -102,47 +143,31 @@ async function handleRegistration(e) {
   e.preventDefault();
   clearRegistrationErrors();
 
-  const name = regName.value.trim();
-  const email = regEmail.value.trim();
+  const name = regName.value;
+  const email = regEmail.value;
   const password = regPassword.value;
 
-  let hasError = false;
-
   const nameCheck = validateName(name);
-  if (!nameCheck.valid) {
-    showError(regName, errRegName, nameCheck.message);
-    hasError = true;
-  }
-
   const emailCheck = validateEmail(email);
-  if (!emailCheck.valid) {
-    showError(regEmail, errRegEmail, emailCheck.message);
-    hasError = true;
-  }
-
   const pwdCheck = validatePassword(password);
-  if (!pwdCheck.valid) {
-    showError(regPassword, errRegPassword, pwdCheck.message);
-    hasError = true;
-  }
 
-  if (hasError) return;
+  updateFieldUI(regName, errRegName, nameCheck);
+  updateFieldUI(regEmail, errRegEmail, emailCheck);
+  updateFieldUI(regPassword, errRegPassword, pwdCheck);
+
+  if (!nameCheck.valid || !emailCheck.valid || !pwdCheck.valid) {
+    return;
+  }
 
   // Show loading state on button
   btnRegister.disabled = true;
   btnRegister.innerHTML = '<span>Creating Account...</span>';
 
   // Save to Firebase User Management
-  await firebaseAuth.registerUser({ name, email, password });
+  await firebaseAuth.registerUser({ name: name.trim(), email: email.trim(), password });
 
   // Genuine Page Redirection to profile.html
   window.location.href = 'profile.html';
-}
-
-function showError(inputEl, errorEl, message) {
-  inputEl.classList.add('is-invalid');
-  inputEl.classList.remove('is-valid');
-  if (errorEl) errorEl.textContent = message;
 }
 
 function clearRegistrationErrors() {

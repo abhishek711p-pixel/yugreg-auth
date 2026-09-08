@@ -1,5 +1,5 @@
 // Profile Validation Controller (Page 2)
-// Handles session prefilling, exact regex validation (a-e), and user sign-out
+// Handles session prefilling, exact regex validation (a-e), whitespace handling, and user sign-out
 
 import { firebaseAuth } from './firebase-config.js';
 
@@ -22,22 +22,34 @@ const errValUsername = document.getElementById('error-val-username');
 const errValEmail = document.getElementById('error-val-email');
 
 // ==========================================================================
-// REGEX VALIDATION LOGIC & DYNAMIC FIELD CHECKERS
+// REGEX & WHITESPACE VALIDATION LOGIC
 // ==========================================================================
 
-// a) Name: Only characters, no numbers and special characters allowed
+// a) Name: Only characters and spaces allowed, no numbers and no special characters
 export function validateName(name) {
-  const trimmed = name.trim();
-  if (!trimmed) return { valid: false, message: 'Name cannot be empty.' };
-  if (/\d/.test(trimmed)) return { valid: false, message: 'Name cannot contain numbers.' };
-  if (/[^A-Za-z\s]/.test(trimmed)) return { valid: false, message: 'Name cannot contain special characters (letters only).' };
-  if (/^[A-Za-z\s]+$/.test(trimmed)) return { valid: true };
+  if (!name || name.trim().length === 0) {
+    return { valid: false, message: 'Name cannot be empty or contain only spaces.' };
+  }
+  if (/\d/.test(name)) {
+    return { valid: false, message: 'Name cannot contain numbers.' };
+  }
+  if (/[^A-Za-z\s]/.test(name)) {
+    return { valid: false, message: 'Name cannot contain special characters (letters only).' };
+  }
+  if (/^[A-Za-z\s]+$/.test(name.trim())) {
+    return { valid: true };
+  }
   return { valid: false, message: 'Only characters and spaces allowed.' };
 }
 
-// b) Password: at least one number and one alphabet is required
+// b) Password: at least one number and one alphabet is required, no spaces allowed
 export function validatePassword(password) {
-  if (!password) return { valid: false, message: 'Password cannot be empty.' };
+  if (!password || password.trim().length === 0) {
+    return { valid: false, message: 'Password cannot be empty or contain only spaces.' };
+  }
+  if (/\s/.test(password)) {
+    return { valid: false, message: 'Password cannot contain spaces.' };
+  }
   
   const hasAlpha = /[A-Za-z]/.test(password);
   const hasDigit = /\d/.test(password);
@@ -57,22 +69,37 @@ export function validatePassword(password) {
 
 // c) Mobile Number: Only numbers are allowed and should be of 10 digits
 export function validateMobile(mobile) {
-  const trimmed = mobile.trim();
-  if (!trimmed) return { valid: false, message: 'Mobile Number cannot be empty.' };
-  if (/\D/.test(trimmed)) return { valid: false, message: 'Only numbers are allowed in Mobile Number.' };
-  if (trimmed.length < 10) return { valid: false, message: `Mobile Number must be 10 digits (currently ${trimmed.length}/10).` };
-  if (trimmed.length > 10) return { valid: false, message: `Mobile Number cannot exceed 10 digits (currently ${trimmed.length}).` };
-  if (/^\d{10}$/.test(trimmed)) return { valid: true };
+  if (!mobile || mobile.trim().length === 0) {
+    return { valid: false, message: 'Mobile Number cannot be empty or contain only spaces.' };
+  }
+  if (/\s/.test(mobile)) {
+    return { valid: false, message: 'Mobile Number cannot contain spaces.' };
+  }
+  if (/\D/.test(mobile)) {
+    return { valid: false, message: 'Only numbers (0-9) are allowed in Mobile Number.' };
+  }
+  if (mobile.length < 10) {
+    return { valid: false, message: `Mobile Number must be 10 digits (currently ${mobile.length}/10).` };
+  }
+  if (mobile.length > 10) {
+    return { valid: false, message: `Mobile Number cannot exceed 10 digits (currently ${mobile.length}).` };
+  }
+  if (/^\d{10}$/.test(mobile)) {
+    return { valid: true };
+  }
   return { valid: false, message: 'Must be exactly 10 digits.' };
 }
 
-// d) Username: alphanumeric with one special character is allowed
+// d) Username: alphanumeric with one special character is allowed, no spaces allowed
 export function validateUsername(username) {
-  const trimmed = username.trim();
-  if (!trimmed) return { valid: false, message: 'Username cannot be empty.' };
-  if (/\s/.test(trimmed)) return { valid: false, message: 'Username cannot contain spaces.' };
+  if (!username || username.trim().length === 0) {
+    return { valid: false, message: 'Username cannot be empty or contain only spaces.' };
+  }
+  if (/\s/.test(username)) {
+    return { valid: false, message: 'Username cannot contain spaces.' };
+  }
 
-  const specialMatches = trimmed.match(/[^A-Za-z0-9]/g) || [];
+  const specialMatches = username.match(/[^A-Za-z0-9]/g) || [];
   if (specialMatches.length === 0) {
     return { valid: false, message: 'Username requires exactly 1 special character (e.g. user_99 or alex@1).' };
   }
@@ -80,18 +107,24 @@ export function validateUsername(username) {
     return { valid: false, message: `Only 1 special character is allowed (found ${specialMatches.length}: ${specialMatches.join(' ')}).` };
   }
 
-  if (/^[A-Za-z0-9]*[^A-Za-z0-9\s][A-Za-z0-9]*$/.test(trimmed)) {
+  if (/^[A-Za-z0-9]*[^A-Za-z0-9\s][A-Za-z0-9]*$/.test(username)) {
     return { valid: true };
   }
   return { valid: false, message: 'Username must be alphanumeric with 1 special character.' };
 }
 
-// e) Email: basic format should follow
+// e) Email: basic format should follow, no spaces allowed
 export function validateEmail(email) {
-  const trimmed = email.trim();
-  if (!trimmed) return { valid: false, message: 'Email cannot be empty.' };
-  if (!trimmed.includes('@')) return { valid: false, message: "Email must include an '@' symbol." };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+  if (!email || email.trim().length === 0) {
+    return { valid: false, message: 'Email cannot be empty or contain only spaces.' };
+  }
+  if (/\s/.test(email)) {
+    return { valid: false, message: 'Email cannot contain spaces.' };
+  }
+  if (!email.includes('@')) {
+    return { valid: false, message: "Email must include an '@' symbol." };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { valid: false, message: 'Please enter a valid email format (e.g. name@example.com).' };
   }
   return { valid: true };
@@ -175,11 +208,7 @@ function setupEventListeners() {
 
 function updateFieldUI(inputEl, errorEl, result) {
   if (validationResult) validationResult.style.display = 'none';
-  if (!inputEl.value.trim()) {
-    inputEl.classList.remove('is-invalid', 'is-valid');
-    if (errorEl) errorEl.textContent = '';
-    return;
-  }
+  
   if (result.valid) {
     inputEl.classList.remove('is-invalid');
     inputEl.classList.add('is-valid');
@@ -229,7 +258,7 @@ function handleValidation() {
     });
   } else {
     validationResult.className = 'result-box error';
-    validationResult.innerHTML = `<strong>✕ Validation Failed</strong><br>Please correct the highlighted fields above.`;
+    validationResult.innerHTML = `<strong>✕ Validation Failed</strong><br>Please correct the highlighted fields above (cannot be empty or invalid).`;
   }
 }
 
