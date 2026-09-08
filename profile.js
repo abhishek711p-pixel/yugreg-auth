@@ -212,8 +212,11 @@ function setupEventListeners() {
   });
 }
 
+const valBadgeSuccess = document.getElementById('val-badge-success');
+
 function updateFieldUI(inputEl, errorEl, result) {
   if (validationResult) validationResult.style.display = 'none';
+  if (valBadgeSuccess) valBadgeSuccess.style.display = 'none';
   
   if (result.valid) {
     inputEl.classList.remove('is-invalid');
@@ -251,6 +254,7 @@ function handleValidation() {
 
   validationResult.style.display = 'block';
   if (isValid) {
+    if (valBadgeSuccess) valBadgeSuccess.style.display = 'inline-flex';
     validationResult.className = 'result-box success';
     validationResult.innerHTML = `<strong>✓ All Information Validated Successfully!</strong><br>All 5 fields satisfy the exact required validation rules.`;
     
@@ -263,6 +267,7 @@ function handleValidation() {
       username: username.trim()
     });
   } else {
+    if (valBadgeSuccess) valBadgeSuccess.style.display = 'none';
     validationResult.className = 'result-box error';
     validationResult.innerHTML = `<strong>✕ Validation Failed</strong><br>Please correct the highlighted fields above (cannot be empty or invalid).`;
   }
