@@ -58,7 +58,7 @@ function validatePassword(password) {
   return { valid: true };
 }
 
-// e) Email: basic format should follow
+// e) Email: strict standard RFC format with valid domain and min 2-letter alphabetic TLD
 function validateEmail(email) {
   if (!email || email.trim().length === 0) {
     return { valid: false, message: 'Email cannot be empty or contain only spaces.' };
@@ -66,11 +66,17 @@ function validateEmail(email) {
   if (/\s/.test(email)) {
     return { valid: false, message: 'Email cannot contain spaces.' };
   }
-  if (!email.includes('@')) {
-    return { valid: false, message: "Email must include an '@' symbol." };
+  if (email.includes(',')) {
+    return { valid: false, message: 'Email cannot contain commas.' };
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { valid: false, message: 'Please enter a valid email format (e.g. name@example.com).' };
+  const parts = email.split('@');
+  if (parts.length !== 2 || !parts[0] || !parts[1]) {
+    return { valid: false, message: "Email must follow standard format: username@domain.com" };
+  }
+  // Strict RFC email regex: alphabetic TLD only (at least 2 letters, e.g. .com, .in, .org)
+  const strictEmailRegex = /^[a-zA-Z0-9]+([._%+-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/;
+  if (!strictEmailRegex.test(email)) {
+    return { valid: false, message: 'Please enter a valid email address with a valid domain (e.g. name@gmail.com).' };
   }
   return { valid: true };
 }
