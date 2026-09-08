@@ -5,6 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/fireba
 import { 
   getAuth, 
   createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
   updateProfile, 
   signOut as fbSignOut, 
   onAuthStateChanged 
@@ -120,6 +121,45 @@ class FirebaseService {
       success: true,
       user: user,
       message: "Account registered successfully with Firebase Authentication!"
+    };
+  }
+
+  // Sign in existing user account with Firebase Authentication
+  async signInUser({ email, password }) {
+    if (!email || !password) {
+      throw new Error("Email and Password are required.");
+    }
+
+    let uid = 'usr_' + Math.random().toString(36).substring(2, 9);
+    let displayName = '';
+
+    // Call live Firebase signIn API
+    if (this.auth) {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email.trim(), password);
+      if (userCredential && userCredential.user) {
+        uid = userCredential.user.uid;
+        displayName = userCredential.user.displayName || '';
+      }
+    }
+
+    // Retrieve any locally cached profile fields if available
+    const registry = this.getUserRegistry();
+    const existing = registry.find(u => u.email === email.trim()) || {};
+
+    const user = this.saveSession({
+      uid,
+      name: displayName || existing.name || (email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1)),
+      email: email.trim(),
+      password: password,
+      mobile: existing.mobile || '',
+      username: existing.username || '',
+      provider: 'firebase.auth.emailPassword'
+    });
+
+    return {
+      success: true,
+      user: user,
+      message: "Signed in successfully with Firebase Authentication!"
     };
   }
 

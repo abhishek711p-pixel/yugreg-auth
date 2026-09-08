@@ -225,6 +225,61 @@ body {
   word-break: break-word;
 }
 
+/* ==========================================================================
+   AUTH TABS (REGISTER / LOGIN)
+   ========================================================================== */
+.auth-tabs {
+  display: flex;
+  background: #181818;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.auth-tab-btn.active {
+  background: #fdfbf7;
+  color: #080808;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.auth-switch-text {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 14px;
+}
+
+.auth-switch-link {
+  color: #fdfbf7;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+}
+
+.auth-switch-link:hover {
+  color: #ede8dc;
+}
+
 .card-title {
   font-size: clamp(18px, 4.5vw, 22px);
   font-weight: 700;

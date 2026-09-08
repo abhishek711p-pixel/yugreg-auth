@@ -1,9 +1,17 @@
-// Registration Page Controller (Page 1)
-// Handles user registration, Firebase session creation, whitespace checks, and redirects to profile.html on success
+// Registration & Login Page Controller (Page 1)
+// Handles user registration, user login via Firebase Auth, whitespace checks, and redirects to profile.html on success
 
 import { firebaseAuth } from './firebase-config.js';
 
-// DOM Elements
+// DOM Elements - Tab & View Switching
+const tabBtnRegister = document.getElementById('tab-btn-register');
+const tabBtnLogin = document.getElementById('tab-btn-login');
+const pageRegister = document.getElementById('page-register');
+const pageLogin = document.getElementById('page-login');
+const linkToLogin = document.getElementById('link-to-login');
+const linkToRegister = document.getElementById('link-to-register');
+
+// Registration Form Elements
 const formRegister = document.getElementById('form-register');
 const regName = document.getElementById('reg-name');
 const regEmail = document.getElementById('reg-email');
@@ -15,6 +23,23 @@ const btnRegister = document.getElementById('btn-register');
 const errRegName = document.getElementById('error-reg-name');
 const errRegEmail = document.getElementById('error-reg-email');
 const errRegPassword = document.getElementById('error-reg-password');
+const regAuthError = document.getElementById('reg-auth-error');
+
+// Login Form Elements
+const formLogin = document.getElementById('form-login');
+const loginEmail = document.getElementById('login-email');
+const loginPassword = document.getElementById('login-password');
+const toggleLoginPwd = document.getElementById('toggle-login-pwd');
+const btnQuickFillLogin = document.getElementById('btn-quick-fill-login');
+const btnLogin = document.getElementById('btn-login');
+
+const errLoginEmail = document.getElementById('error-login-email');
+const errLoginPassword = document.getElementById('error-login-password');
+const loginAuthError = document.getElementById('login-auth-error');
+
+// ==========================================================================
+// REGEX VALIDATION LOGIC
+// ==========================================================================
 
 // a) Name: Only characters, no numbers and special characters allowed
 function validateName(name) {
@@ -81,6 +106,9 @@ function validateEmail(email) {
   return { valid: true };
 }
 
+// ==========================================================================
+// INITIALIZE
+// ==========================================================================
 function init() {
   // If user already has an active session, redirect them to profile page directly
   const currentSession = firebaseAuth.loadSession();
@@ -93,10 +121,21 @@ function init() {
 }
 
 function setupEventListeners() {
+  // Mode Switch Tabs & Links
+  tabBtnRegister.addEventListener('click', () => switchAuthMode('register'));
+  tabBtnLogin.addEventListener('click', () => switchAuthMode('login'));
+  if (linkToLogin) linkToLogin.addEventListener('click', () => switchAuthMode('login'));
+  if (linkToRegister) linkToRegister.addEventListener('click', () => switchAuthMode('register'));
+
   // Registration Form Submission
   formRegister.addEventListener('submit', handleRegistration);
 
-  // Quick Demo Autofill
+  // Login Form Submission
+  if (formLogin) {
+    formLogin.addEventListener('submit', handleLogin);
+  }
+
+  // Quick Demo Autofill - Register
   btnQuickFill.addEventListener('click', () => {
     regName.value = 'Alex Morgan';
     regEmail.value = 'alex.morgan@example.com';
@@ -104,18 +143,22 @@ function setupEventListeners() {
     clearRegistrationErrors();
   });
 
-  // Password Visibility Toggle
-  toggleRegPwd.addEventListener('click', () => {
-    if (regPassword.type === 'password') {
-      regPassword.type = 'text';
-      toggleRegPwd.textContent = 'Hide';
-    } else {
-      regPassword.type = 'password';
-      toggleRegPwd.textContent = 'Show';
-    }
-  });
+  // Quick Demo Autofill - Login
+  if (btnQuickFillLogin) {
+    btnQuickFillLogin.addEventListener('click', () => {
+      loginEmail.value = 'alex.morgan@example.com';
+      loginPassword.value = 'Pass123';
+      clearLoginErrors();
+    });
+  }
 
-  // Live real-time validation on typing
+  // Password Visibility Toggles
+  toggleRegPwd.addEventListener('click', () => togglePasswordVisibility(regPassword, toggleRegPwd));
+  if (toggleLoginPwd) {
+    toggleLoginPwd.addEventListener('click', () => togglePasswordVisibility(loginPassword, toggleLoginPwd));
+  }
+
+  // Live real-time validation on typing - Register
   regName.addEventListener('input', () => {
     const res = validateName(regName.value);
     updateFieldUI(regName, errRegName, res);
@@ -130,6 +173,54 @@ function setupEventListeners() {
     const res = validatePassword(regPassword.value);
     updateFieldUI(regPassword, errRegPassword, res);
   });
+
+  // Live clearing on typing - Login
+  if (loginEmail) {
+    loginEmail.addEventListener('input', () => {
+      loginEmail.classList.remove('is-invalid');
+      if (errLoginEmail) errLoginEmail.textContent = '';
+      if (loginAuthError) loginAuthError.style.display = 'none';
+    });
+  }
+
+  if (loginPassword) {
+    loginPassword.addEventListener('input', () => {
+      loginPassword.classList.remove('is-invalid');
+      if (errLoginPassword) errLoginPassword.textContent = '';
+      if (loginAuthError) loginAuthError.style.display = 'none';
+    });
+  }
+}
+
+function switchAuthMode(mode) {
+  clearRegistrationErrors();
+  clearLoginErrors();
+
+  if (mode === 'register') {
+    tabBtnRegister.classList.add('active');
+    tabBtnRegister.setAttribute('aria-selected', 'true');
+    tabBtnLogin.classList.remove('active');
+    tabBtnLogin.setAttribute('aria-selected', 'false');
+    pageRegister.style.display = 'block';
+    pageLogin.style.display = 'none';
+  } else {
+    tabBtnLogin.classList.add('active');
+    tabBtnLogin.setAttribute('aria-selected', 'true');
+    tabBtnRegister.classList.remove('active');
+    tabBtnRegister.setAttribute('aria-selected', 'false');
+    pageRegister.style.display = 'none';
+    pageLogin.style.display = 'block';
+  }
+}
+
+function togglePasswordVisibility(inputEl, btnEl) {
+  if (inputEl.type === 'password') {
+    inputEl.type = 'text';
+    btnEl.textContent = 'Hide';
+  } else {
+    inputEl.type = 'password';
+    btnEl.textContent = 'Show';
+  }
 }
 
 function updateFieldUI(inputEl, errorEl, result) {
@@ -144,7 +235,9 @@ function updateFieldUI(inputEl, errorEl, result) {
   }
 }
 
-// Handle Registration Submission with Genuine Page Redirection
+// ==========================================================================
+// 1. REGISTRATION HANDLER (createUserWithEmailAndPassword)
+// ==========================================================================
 async function handleRegistration(e) {
   e.preventDefault();
   clearRegistrationErrors();
@@ -170,7 +263,7 @@ async function handleRegistration(e) {
   btnRegister.innerHTML = '<span>Creating Account...</span>';
 
   try {
-    // Attempt registration with Firebase Authentication
+    // Attempt registration with Firebase Authentication (createUserWithEmailAndPassword)
     await firebaseAuth.registerUser({ name: name.trim(), email: email.trim(), password });
 
     // ONLY on success, perform redirection
@@ -207,11 +300,82 @@ async function handleRegistration(e) {
         break;
     }
 
-    // Display error message in the UI near the registration form
-    const regAuthError = document.getElementById('reg-auth-error');
     if (regAuthError) {
       regAuthError.textContent = userMessage;
       regAuthError.style.display = 'block';
+    }
+  }
+}
+
+// ==========================================================================
+// 2. LOGIN HANDLER (signInWithEmailAndPassword)
+// ==========================================================================
+async function handleLogin(e) {
+  e.preventDefault();
+  clearLoginErrors();
+
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+
+  let hasError = false;
+
+  if (!email) {
+    loginEmail.classList.add('is-invalid');
+    if (errLoginEmail) errLoginEmail.textContent = 'Email cannot be empty.';
+    hasError = true;
+  }
+
+  if (!password) {
+    loginPassword.classList.add('is-invalid');
+    if (errLoginPassword) errLoginPassword.textContent = 'Password cannot be empty.';
+    hasError = true;
+  }
+
+  if (hasError) return;
+
+  // Show loading state on button
+  btnLogin.disabled = true;
+  btnLogin.innerHTML = '<span>Signing In...</span>';
+
+  try {
+    // Attempt sign-in with Firebase Authentication (signInWithEmailAndPassword)
+    await firebaseAuth.signInUser({ email, password });
+
+    // ONLY on success, redirect to profile.html
+    window.location.href = 'profile.html';
+  } catch (error) {
+    // Reset button state
+    btnLogin.disabled = false;
+    btnLogin.innerHTML = '<span>Log In</span>';
+
+    // Map Firebase login error codes to user-facing messages
+    let userMessage = "Login failed. Please check your credentials.";
+
+    switch (error.code) {
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        userMessage = "Incorrect password. Please try again.";
+        loginPassword.classList.add('is-invalid');
+        if (errLoginPassword) errLoginPassword.textContent = userMessage;
+        break;
+      case 'auth/user-not-found':
+        userMessage = "No account found with this email. Please register first.";
+        loginEmail.classList.add('is-invalid');
+        if (errLoginEmail) errLoginEmail.textContent = userMessage;
+        break;
+      case 'auth/invalid-email':
+        userMessage = "Please enter a valid email address.";
+        loginEmail.classList.add('is-invalid');
+        if (errLoginEmail) errLoginEmail.textContent = userMessage;
+        break;
+      default:
+        userMessage = error.message || "Login failed. Please check your credentials and try again.";
+        break;
+    }
+
+    if (loginAuthError) {
+      loginAuthError.textContent = userMessage;
+      loginAuthError.style.display = 'block';
     }
   }
 }
@@ -223,10 +387,20 @@ function clearRegistrationErrors() {
   [errRegName, errRegEmail, errRegPassword].forEach(el => {
     if (el) el.textContent = '';
   });
-  const regAuthError = document.getElementById('reg-auth-error');
   if (regAuthError) {
     regAuthError.style.display = 'none';
     regAuthError.textContent = '';
+  }
+}
+
+function clearLoginErrors() {
+  if (loginEmail) loginEmail.classList.remove('is-invalid', 'is-valid');
+  if (loginPassword) loginPassword.classList.remove('is-invalid', 'is-valid');
+  if (errLoginEmail) errLoginEmail.textContent = '';
+  if (errLoginPassword) errLoginPassword.textContent = '';
+  if (loginAuthError) {
+    loginAuthError.style.display = 'none';
+    loginAuthError.textContent = '';
   }
 }
 
