@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YugReg | User Registration & Validation</title>
-  <meta name="description" content="Simple, responsive mobile-first registration and profile validation web app.">
+  <title>YugReg | Create Account</title>
+  <meta name="description" content="Mobile-first user registration and account creation.">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,16 +21,8 @@
         <img src="favicon.svg" alt="YugReg Logo" class="brand-logo-img">
         <span class="brand-title">YugReg</span>
       </div>
-      
       <div class="header-actions">
-        <button id="logout-btn" class="logout-btn" style="display: none;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-          <span>Log Out</span>
-        </button>
+        <span class="header-status-tag">Step 1 of 2</span>
       </div>
     </div>
   </header>
@@ -47,182 +39,77 @@
       </div>
 
       <div class="card">
-
-      <!-- ========================================== -->
-      <!-- PAGE 1: REGISTRATION FORM                  -->
-      <!-- ========================================== -->
-      <section id="page-register" class="page-view active">
-        <div class="card-header">
-          <h1 class="card-title">Create an Account</h1>
-          <p class="card-subtitle">Please enter your details to register.</p>
-        </div>
-
-        <form id="form-register" novalidate>
-          
-          <!-- Name Field -->
-          <div class="form-group">
-            <label for="reg-name" class="form-label">Name <span class="req">*</span></label>
-            <input 
-              type="text" 
-              id="reg-name" 
-              class="form-input" 
-              placeholder="Enter your full name" 
-              autocomplete="name" 
-              required
-            >
-            <div id="error-reg-name" class="error-text"></div>
+        <!-- ========================================== -->
+        <!-- REGISTRATION FORM                          -->
+        <!-- ========================================== -->
+        <section id="page-register" class="page-view active">
+          <div class="card-header">
+            <h1 class="card-title">Create an Account</h1>
+            <p class="card-subtitle">Please enter your details to register.</p>
           </div>
 
-          <!-- Email Field -->
-          <div class="form-group">
-            <label for="reg-email" class="form-label">Email <span class="req">*</span></label>
-            <input 
-              type="email" 
-              id="reg-email" 
-              class="form-input" 
-              placeholder="Enter your email" 
-              autocomplete="email" 
-              required
-            >
-            <div id="error-reg-email" class="error-text"></div>
-          </div>
-
-          <!-- Password Field -->
-          <div class="form-group">
-            <label for="reg-password" class="form-label">Password <span class="req">*</span></label>
-            <div class="input-password-wrapper">
+          <form id="form-register" novalidate>
+            
+            <!-- Name Field -->
+            <div class="form-group">
+              <label for="reg-name" class="form-label">Name <span class="req">*</span></label>
               <input 
-                type="password" 
-                id="reg-password" 
+                type="text" 
+                id="reg-name" 
                 class="form-input" 
-                placeholder="Create a password" 
-                autocomplete="new-password" 
+                placeholder="Enter your full name" 
+                autocomplete="name" 
                 required
               >
-              <button type="button" class="pwd-toggle" id="toggle-reg-pwd" aria-label="Toggle password visibility">Show</button>
+              <div id="error-reg-name" class="error-text"></div>
             </div>
-            <div id="error-reg-password" class="error-text"></div>
-          </div>
 
-          <!-- Submit Button -->
-          <button type="submit" class="btn btn-primary" id="btn-register">
-            <span>Register</span>
-          </button>
-
-          <!-- Quick Demo Autofill -->
-          <button type="button" class="btn btn-text" id="btn-quick-fill">
-            ⚡ Autofill sample information
-          </button>
-        </form>
-      </section>
-
-
-      <!-- ========================================== -->
-      <!-- PAGE 2: PROFILE & VALIDATION FORM          -->
-      <!-- ========================================== -->
-      <section id="page-profile" class="page-view">
-        <div class="card-header">
-          <div class="badge-success">✓ Registered Successfully</div>
-          <h1 class="card-title">User Information</h1>
-          <p class="card-subtitle">Your registration info is prefilled. Fill the remaining details and click Validate.</p>
-        </div>
-
-        <form id="form-validate" novalidate>
-          
-          <!-- a) Name (Prefilled) -->
-          <div class="form-group">
-            <div class="label-row">
-              <label for="val-name" class="form-label">a) Name</label>
-              <span class="prefilled-tag">Prefilled</span>
-            </div>
-            <input 
-              type="text" 
-              id="val-name" 
-              class="form-input" 
-              placeholder="Only characters, no numbers/symbols" 
-              required
-            >
-            <div id="error-val-name" class="error-text"></div>
-          </div>
-
-          <!-- b) Password (Prefilled) -->
-          <div class="form-group">
-            <div class="label-row">
-              <label for="val-password" class="form-label">b) Password</label>
-              <span class="prefilled-tag">Prefilled</span>
-            </div>
-            <div class="input-password-wrapper">
+            <!-- Email Field -->
+            <div class="form-group">
+              <label for="reg-email" class="form-label">Email <span class="req">*</span></label>
               <input 
-                type="password" 
-                id="val-password" 
+                type="email" 
+                id="reg-email" 
                 class="form-input" 
-                placeholder="At least one number & one alphabet" 
+                placeholder="Enter your email" 
+                autocomplete="email" 
                 required
               >
-              <button type="button" class="pwd-toggle" id="toggle-val-pwd" aria-label="Toggle password visibility">Show</button>
+              <div id="error-reg-email" class="error-text"></div>
             </div>
-            <div id="error-val-password" class="error-text"></div>
-          </div>
 
-          <!-- c) Mobile Number -->
-          <div class="form-group">
-            <label for="val-mobile" class="form-label">c) Mobile Number <span class="req">*</span></label>
-            <input 
-              type="tel" 
-              id="val-mobile" 
-              class="form-input" 
-              placeholder="10-digit mobile number" 
-              inputmode="numeric" 
-              maxlength="10"
-              required
-            >
-            <div id="error-val-mobile" class="error-text"></div>
-          </div>
-
-          <!-- d) Username -->
-          <div class="form-group">
-            <label for="val-username" class="form-label">d) Username <span class="req">*</span></label>
-            <input 
-              type="text" 
-              id="val-username" 
-              class="form-input" 
-              placeholder="Alphanumeric with 1 special character (e.g. user_99)" 
-              required
-            >
-            <div id="error-val-username" class="error-text"></div>
-          </div>
-
-          <!-- e) Email (Prefilled) -->
-          <div class="form-group">
-            <div class="label-row">
-              <label for="val-email" class="form-label">e) Email</label>
-              <span class="prefilled-tag">Prefilled</span>
+            <!-- Password Field -->
+            <div class="form-group">
+              <label for="reg-password" class="form-label">Password <span class="req">*</span></label>
+              <div class="input-password-wrapper">
+                <input 
+                  type="password" 
+                  id="reg-password" 
+                  class="form-input" 
+                  placeholder="Create a password" 
+                  autocomplete="new-password" 
+                  required
+                >
+                <button type="button" class="pwd-toggle" id="toggle-reg-pwd" aria-label="Toggle password visibility">Show</button>
+              </div>
+              <div id="error-reg-password" class="error-text"></div>
             </div>
-            <input 
-              type="email" 
-              id="val-email" 
-              class="form-input" 
-              placeholder="name@example.com" 
-              required
-            >
-            <div id="error-val-email" class="error-text"></div>
-          </div>
 
-          <!-- Validate Button -->
-          <button type="button" class="btn btn-primary" id="btn-validate">
-            <span>Validate</span>
-          </button>
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary" id="btn-register">
+              <span>Register</span>
+            </button>
 
-        </form>
+            <!-- Quick Demo Autofill -->
+            <button type="button" class="btn btn-text" id="btn-quick-fill">
+              ⚡ Autofill sample information
+            </button>
+          </form>
+        </section>
 
-        <!-- Validation Success / Failure Message Box -->
-        <div id="validation-result" class="result-box" style="display: none;"></div>
-
-      </section>
-
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 
   <script type="module" src="app.js"></script>
 </body>

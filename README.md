@@ -1,6 +1,6 @@
 # YugReg | Mobile-First User Registration & Profile Validation App
 
-A modern, responsive, mobile-first web application featuring account registration, automatic prefilling of registered user data, strict regex validation across all fields, and Google Firebase user management with secure session logout.
+A modern, responsive, mobile-first web application featuring multi-page account registration with **genuine browser page redirection**, automatic prefilling of registered user data, strict regex validation across all fields, and Google Firebase user management with secure session logout.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fabhishek711p-pixel%2Fyugreg-auth)
 
@@ -12,9 +12,13 @@ A modern, responsive, mobile-first web application featuring account registratio
 
 ---
 
-## ✨ Key Features
+## ✨ Key Technical Architecture & Features
 
-- **📱 Mobile-First & Fully Responsive**: Designed for smartphone viewports first, adapting smoothly to tablets and desktop screens.
+- **🌐 Genuine Multi-Page URL Redirection**: 
+  - **Step 1 (`/` or `/index.html`)**: Account creation page. On submission success, it performs a real browser redirect (`window.location.href = 'profile.html'`), visibly changing the URL bar to `/profile` (or `profile.html`).
+  - **Step 2 (`/profile` or `/profile.html`)**: User information page with auto-prefilled registration data and full regex validation.
+  - **Log Out**: Securely clears session and genuinely redirects back to `/index.html`.
+- **📱 Mobile-First & Fully Responsive**: Optimized for smartphone viewports first, adapting smoothly to tablets and desktop screens.
 - **🎨 Luxury Black & Warm White Theme**: Modern, high-contrast `#080808` obsidian dark background with `#fdfbf7` warm white typography and interactive elements.
 - **🔒 Exact Regex Validation Rules**:
   - **a) Name**: Only characters and spaces allowed (`/^[A-Za-z\s]+$/`).
@@ -65,11 +69,13 @@ Follow the prompt instructions in your terminal to complete the deployment.
 
 ```
 yugreg-auth/
-├── index.html          # Semantic HTML5 layout & responsive DOM
+├── index.html          # Registration Page (Step 1)
+├── profile.html        # User Info & Validation Page (Step 2 - Genuine Redirection Target)
 ├── style.css           # Black & Warm White responsive CSS system
-├── app.js              # State router, live regex validator & form controller
+├── app.js              # Step 1 Registration controller & redirect router
+├── profile.js          # Step 2 Profile validator & logout controller
 ├── firebase-config.js  # Firebase Auth client & session management
 ├── favicon.svg         # Geometric YugReg vector brand badge
-├── vercel.json         # Vercel deployment configuration
+├── vercel.json         # Vercel clean URL & route configuration
 └── README.md           # Project documentation & setup guide
 ```

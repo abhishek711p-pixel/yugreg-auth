@@ -119,6 +119,17 @@ body {
   border-color: #5c554c;
 }
 
+.header-status-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b5afa4;
+  background: #181818;
+  border: 1px solid #2c2824;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
 /* ==========================================================================
    MAIN WRAPPER & RESPONSIVE CARD
    ========================================================================== */

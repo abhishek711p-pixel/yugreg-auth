@@ -1,6 +1,9 @@
 {
   "version": 2,
-  "name": "yugreg-auth",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "routes": [
+    { "src": "/profile", "dest": "/profile.html" },
+    { "handle": "filesystem" }
+  ]
 }
