@@ -1,39 +1,63 @@
 # YugReg | Mobile-First User Registration & Profile Validation App
 
-A modern, responsive, mobile-first web application featuring account registration, automatic prefilling of user data, strict regex validation across all fields, and Google Firebase user management with session logout.
+A modern, responsive, mobile-first web application featuring account registration, automatic prefilling of registered user data, strict regex validation across all fields, and Google Firebase user management with secure session logout.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fabhishek711p-pixel%2Fyugreg-auth)
+
+---
+
+## 🔗 Repository Branches
+- **`main` branch**: [https://github.com/abhishek711p-pixel/yugreg-auth/tree/main](https://github.com/abhishek711p-pixel/yugreg-auth/tree/main) (Production)
+- **`dev` branch**: [https://github.com/abhishek711p-pixel/yugreg-auth/tree/dev](https://github.com/abhishek711p-pixel/yugreg-auth/tree/dev) (Development)
 
 ---
 
 ## ✨ Key Features
 
-- **📱 Mobile-First & Fully Responsive**: Designed for smartphone viewports first, adapting gracefully to tablets and desktop screens.
-- **🎨 Luxury Black & Warm White Theme**: Modern, high-contrast, clean minimalist aesthetic with animated hero brand badge.
-- **🔒 Exact Regex Validation Engine**:
+- **📱 Mobile-First & Fully Responsive**: Designed for smartphone viewports first, adapting smoothly to tablets and desktop screens.
+- **🎨 Luxury Black & Warm White Theme**: Modern, high-contrast `#080808` obsidian dark background with `#fdfbf7` warm white typography and interactive elements.
+- **🔒 Exact Regex Validation Rules**:
   - **a) Name**: Only characters and spaces allowed (`/^[A-Za-z\s]+$/`).
   - **b) Password**: At least one number and one alphabet required (`/^(?=.*[A-Za-z])(?=.*\d).+$/`).
   - **c) Mobile Number**: Exactly 10 numeric digits (`/^\d{10}$/`).
   - **d) Username**: Alphanumeric with exactly 1 special character (`/^[A-Za-z0-9]*[^A-Za-z0-9\s][A-Za-z0-9]*$/`).
   - **e) Email**: Standard RFC email format (`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`).
   - **Non-Empty Check**: All fields are mandatory.
-- **⚡ Smart Live Validation Feedback**: Field-specific, real-time error hints as you type (e.g. clearly indicates if a letter or number is missing in the password).
-- **🔥 Firebase User Management**: Session persistence and logout flow (`signOut()`).
-- **🛡️ Smart Scroll Navigation Header**: Header automatically hides on scroll down for maximum screen real estate and reveals on scroll up.
+- **⚡ Dynamic Live Validation Feedback**: Field-specific real-time hints as you type (e.g., dynamically alerts if missing a letter vs. missing a number).
+- **🔥 Firebase User Management**: Auto-prefills session data on step transition and provides reliable `signOut()` logout flow.
+- **🛡️ Smart Scroll Navigation Header**: Header automatically hides on scroll down to maximize screen estate and reveals on scroll up.
 
 ---
 
-## 🚀 Getting Started Locally
+## 🚀 Deployment Guide (Vercel)
+
+### Option 1: Deploy via Vercel Web Dashboard (Recommended)
+1. Go to [https://vercel.com/new](https://vercel.com/new).
+2. Connect your GitHub account and select the **`yugreg-auth`** repository.
+3. Choose the branch you want to deploy (`main` or `dev`).
+4. Click **Deploy**. Vercel will automatically build and publish your site in seconds!
+
+### Option 2: Deploy via Vercel CLI
+```bash
+npx vercel
+```
+Follow the prompt instructions in your terminal to complete the deployment.
+
+---
+
+## 💻 Running Locally
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/<YOUR-USERNAME>/yugreg-auth.git
+   git clone https://github.com/abhishek711p-pixel/yugreg-auth.git
    cd yugreg-auth
    ```
 
-2. **Run locally**:
+2. **Serve the project**:
    ```bash
    npx serve .
    ```
-   Open `http://localhost:3000` in your browser.
+3. Open `http://localhost:3000` in your web browser.
 
 ---
 
@@ -41,26 +65,11 @@ A modern, responsive, mobile-first web application featuring account registratio
 
 ```
 yugreg-auth/
-├── index.html          # Semantic HTML5 layout
+├── index.html          # Semantic HTML5 layout & responsive DOM
 ├── style.css           # Black & Warm White responsive CSS system
 ├── app.js              # State router, live regex validator & form controller
 ├── firebase-config.js  # Firebase Auth client & session management
-├── favicon.svg         # Geometric YugReg vector logo
-└── README.md           # Project documentation
-```
-
----
-
-## 🌐 Deployment
-
-### Deploy with Vercel:
-```bash
-npx vercel
-```
-
-### Deploy with Firebase Hosting:
-```bash
-npx firebase-tools login
-npx firebase-tools init hosting
-npx firebase-tools deploy
+├── favicon.svg         # Geometric YugReg vector brand badge
+├── vercel.json         # Vercel deployment configuration
+└── README.md           # Project documentation & setup guide
 ```
