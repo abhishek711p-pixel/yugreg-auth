@@ -90,24 +90,20 @@ class FirebaseService {
 
     // Call live Firebase Auth API if online and initialized
     if (this.auth) {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(this.auth, email.trim(), password);
-        if (userCredential.user) {
-          uid = userCredential.user.uid;
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email.trim(), password);
+      if (userCredential && userCredential.user) {
+        uid = userCredential.user.uid;
+        try {
           await updateProfile(userCredential.user, {
             displayName: name.trim()
           });
-        }
-      } catch (err) {
-        console.warn("Firebase Cloud Auth note (saving to session):", err.message);
-        // If account already exists or offline, proceed with session saving
-        if (err.code === 'auth/email-already-in-use') {
-          // Continue to prefill session
+        } catch (profileErr) {
+          console.warn("Could not update display name:", profileErr);
         }
       }
     }
 
-    // Save session in local persistence for Step 2 prefill
+    // Save session in local persistence for Step 2 prefill only on successful registration
     const user = this.saveSession({
       uid,
       name: name.trim(),

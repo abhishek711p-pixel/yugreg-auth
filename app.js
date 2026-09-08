@@ -169,11 +169,51 @@ async function handleRegistration(e) {
   btnRegister.disabled = true;
   btnRegister.innerHTML = '<span>Creating Account...</span>';
 
-  // Save to Firebase User Management
-  await firebaseAuth.registerUser({ name: name.trim(), email: email.trim(), password });
+  try {
+    // Attempt registration with Firebase Authentication
+    await firebaseAuth.registerUser({ name: name.trim(), email: email.trim(), password });
 
-  // Genuine Page Redirection to profile.html
-  window.location.href = 'profile.html';
+    // ONLY on success, perform redirection
+    window.location.href = 'profile.html';
+  } catch (error) {
+    // Reset button state
+    btnRegister.disabled = false;
+    btnRegister.innerHTML = '<span>Register</span>';
+
+    // Map Firebase error codes to user-facing messages
+    let userMessage = "Registration failed. Please try again.";
+
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        userMessage = "This email is already registered. Try logging in instead.";
+        regEmail.classList.add('is-invalid');
+        regEmail.classList.remove('is-valid');
+        if (errRegEmail) errRegEmail.textContent = userMessage;
+        break;
+      case 'auth/weak-password':
+        userMessage = "Password is too weak.";
+        regPassword.classList.add('is-invalid');
+        regPassword.classList.remove('is-valid');
+        if (errRegPassword) errRegPassword.textContent = userMessage;
+        break;
+      case 'auth/invalid-email':
+        userMessage = "Please enter a valid email address.";
+        regEmail.classList.add('is-invalid');
+        regEmail.classList.remove('is-valid');
+        if (errRegEmail) errRegEmail.textContent = userMessage;
+        break;
+      default:
+        userMessage = error.message || "Registration failed. Please try again.";
+        break;
+    }
+
+    // Display error message in the UI near the registration form
+    const regAuthError = document.getElementById('reg-auth-error');
+    if (regAuthError) {
+      regAuthError.textContent = userMessage;
+      regAuthError.style.display = 'block';
+    }
+  }
 }
 
 function clearRegistrationErrors() {
@@ -183,6 +223,11 @@ function clearRegistrationErrors() {
   [errRegName, errRegEmail, errRegPassword].forEach(el => {
     if (el) el.textContent = '';
   });
+  const regAuthError = document.getElementById('reg-auth-error');
+  if (regAuthError) {
+    regAuthError.style.display = 'none';
+    regAuthError.textContent = '';
+  }
 }
 
 // Smart Hide/Show Header on Scroll
